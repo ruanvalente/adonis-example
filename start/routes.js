@@ -23,3 +23,14 @@ Route.group('posts', () => {
   Route.patch('/edit/:id', 'PostController.edit')
   Route.delete('/post/:id', 'PostController.destroy')
 }).prefix('posts')
+
+Route.group('users', () => {
+  Route.post('/create', 'UserController.create')
+  Route.get('/index', 'UserController.index')
+}).prefix('user')
+
+Route.group('auth', () => {
+  Route.post('/login', 'AuthController.login')
+})
+  .prefix('auth')
+  .middleware('auth')
