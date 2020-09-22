@@ -36,34 +36,30 @@ class PostController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async create({ request, response, view }) {
-    const post = request.only(['title', 'content'])
+  async create({ request, response }) {
+    try {
+      const { title } = request.only(['title'])
 
-    await Post.create(post)
+      if (await Post.findBy('title', title)) {
+        return response.badRequest({ message: 'Post já cadastrado' })
+      }
 
-    return post
+      const post = request.only(['title', 'content'])
+      return await Post.create(post)
+    } catch (error) {
+      return response.internalServerError({
+        message: 'Falha ao cadastrar o post',
+      })
+    }
   }
 
-  /**
-   * Create/save a new post.
-   * POST posts
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async store({ request, response }) {}
-
-  /**
-   * Display a single post.
-   * GET posts/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show({ params, request, response, view }) {}
+  async show({ params, response }) {
+    try {
+      return await Post.find(params.id)
+    } catch (error) {
+      return response.notFound({ message: 'Error, post não encontrado' })
+    }
+  }
 
   /**
    * Render a form to update an existing post.
@@ -74,17 +70,20 @@ class PostController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async edit({ params, request, response, view }) {}
 
-  /**
-   * Update post details.
-   * PUT or PATCH posts/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async update({ params, request, response }) {}
+  async edit({ params, request, response }) {
+    try {
+      const post = await Post.findOrFail(params.id)
+      const createNewPost = request.only(['title', 'content'])
+      post.merge(createNewPost)
+
+      await post.save()
+
+      return post
+    } catch (error) {
+      return response.badRequest({ message: 'Falha ao atualizar o post' })
+    }
+  }
 
   /**
    * Delete a post with id.
@@ -94,7 +93,14 @@ class PostController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, request, response }) {}
+  async destroy({ params, response }) {
+    try {
+      const post = await Post.findOrFail(params.id)
+      await post.delete()
+    } catch (error) {
+      return response.badRequest({ message: 'Falha ao remover o post' })
+    }
+  }
 }
 
 module.exports = PostController

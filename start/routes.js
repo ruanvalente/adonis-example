@@ -19,4 +19,7 @@ const Route = use('Route')
 Route.group('posts', () => {
   Route.post('/new', 'PostController.create')
   Route.get('/index', 'PostController.index')
+  Route.get('/index/:id', 'PostController.show')
+  Route.patch('/edit/:id', 'PostController.edit')
+  Route.delete('/post/:id', 'PostController.destroy')
 }).prefix('posts')
