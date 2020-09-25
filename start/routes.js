@@ -25,12 +25,10 @@ Route.group('posts', () => {
 }).prefix('posts')
 
 Route.group('users', () => {
-  Route.post('/create', 'UserController.create')
-  Route.get('/index', 'UserController.index')
+  Route.post('create', 'UserController.create')
+  Route.get('index', 'UserController.index')
 }).prefix('user')
 
-Route.group('auth', () => {
-  Route.post('/login', 'AuthController.login')
-})
-  .prefix('auth')
-  .middleware('auth')
+Route.group('session', () => {
+  Route.post('store', 'SessionController.store')
+}).prefix('session')
