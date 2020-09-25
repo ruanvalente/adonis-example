@@ -17,12 +17,17 @@
 const Route = use('Route')
 
 Route.group('posts', () => {
-  Route.post('/new', 'PostController.create')
-  Route.get('/index', 'PostController.index')
-  Route.get('/index/:id', 'PostController.show')
-  Route.patch('/edit/:id', 'PostController.edit')
-  Route.delete('/post/:id', 'PostController.destroy')
+  Route.get('index', 'PostController.index')
+  Route.get('index/:id', 'PostController.show')
+  Route.patch('edit/:id', 'PostController.edit')
+  Route.delete('post/:id', 'PostController.destroy')
 }).prefix('posts')
+
+Route.group('post_auth', () => {
+  Route.post('new', 'PostController.create')
+})
+  .prefix('posts')
+  .middleware('auth')
 
 Route.group('users', () => {
   Route.post('create', 'UserController.create')

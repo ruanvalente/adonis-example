@@ -36,7 +36,7 @@ class PostController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async create({ request, response }) {
+  async create({ request, response, auth }) {
     try {
       const { title } = request.only(['title'])
 
@@ -44,8 +44,15 @@ class PostController {
         return response.badRequest({ message: 'Post já cadastrado' })
       }
 
-      const post = request.only(['title', 'content'])
-      return await Post.create(post)
+      const data = request.only(['title', 'content'])
+      const post = await Post.create({
+        ...data,
+        user_id: auth.user.id,
+      })
+
+      await post.load('user')
+
+      return post
     } catch (error) {
       return response.internalServerError({
         message: 'Falha ao cadastrar o post',
