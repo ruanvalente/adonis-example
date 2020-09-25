@@ -11,12 +11,6 @@ class AuthController {
       return response.unauthorized({ message: 'Não autorizado' })
     }
   }
-
-  async logout({ auth, response }) {
-    await auth.logout()
-
-    return response.redirect('/')
-  }
 }
 
 module.exports = AuthController
