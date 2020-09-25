@@ -6,10 +6,11 @@ const Schema = use('Schema')
 class PostSchema extends Schema {
   up() {
     this.create('posts', (table) => {
-      table.string('title').notNullable()
-      table.string('content').notNullable()
       table.increments()
       table.timestamps()
+      table.string('title').notNullable()
+      table.text('content').notNullable()
+      table.integer('user_id').unsigned().references('id').inTable('users')
     })
   }
 
